@@ -1,5 +1,5 @@
-const canvasWidth = 540;
-const canvasHeight = 960;
+const canvasWidth = 1680;
+const canvasHeight = 1050;
 
 
 let mainCanvas;
@@ -71,7 +71,7 @@ function setup() {
     slider3.parent('slider3Container');
     slider4.parent('slider4Container');
 
-    songButton = createButton('(music loading)');
+    songButton = createButton('(templates loading)');
     songButton.mousePressed(switchRunMode);
     songButton.parent('button1Container');
     songButton.elt.disabled = true;
@@ -122,7 +122,7 @@ function switchRunMode() {
         editorMode = false;
         let now = millis();
         songEpoch = now + (debugFastRefresh ? 0 : 5000);
-        songButton.elt.innerHTML = "stop music";
+        songButton.elt.innerHTML = "stop templates";
     } else {
         if (songIsPlaying) {
             song.stop();
@@ -135,7 +135,7 @@ function switchRunMode() {
         slider4.elt.disabled = false;
 
         editorMode = true;
-        songButton.elt.innerHTML = "start music";
+        songButton.elt.innerHTML = "start templates";
     }
 }
 
@@ -193,11 +193,14 @@ function draw() {
                 if (curSlice < words.length) {
                     cur_words = words[curSlice];
                 }
+
                 textInput.value(cur_words);
                 slider1.value(roww[0]);
                 slider2.value(roww[1]);
                 slider3.value(roww[2]);
                 slider4.value(roww[3]);
+                // console.log(roww)
+                // console.log(cur_words)
                 draw_one_frame(cur_words, roww[0], roww[1], roww[2], roww[3], curSlice);//currentTime()
                 //draw_one_frame(cur_words, roww[0], roww[1], roww[2], roww[3], song.currentTime());
             }
