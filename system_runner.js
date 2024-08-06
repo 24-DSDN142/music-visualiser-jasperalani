@@ -29,7 +29,10 @@ function songLoaded() {
     songButton.elt.disabled = false;
     // let now = millis();
     // songEpoch = now + 5000;
-    if (debugFastRefresh && getAudioContext().state != "suspended") {
+    if (
+        (debugFastRefresh && getAudioContext().state != "suspended")
+        || (getAudioContext().state === "suspended" && confirm("Do you want to start the song?"))
+    ) {
         switchRunMode()
     }
 }
