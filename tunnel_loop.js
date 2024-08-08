@@ -32,7 +32,6 @@ let gridStep = 20;
 let draw_ = true; // debug tool disable drawing objects
 let colour = "#" + palate[0];
 let lastRandom = 0;
-let img;
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
@@ -50,24 +49,45 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
     // drawPerspectiveLines()
 
-    let speakerCenterX = (width / 2) + 1;
-    let speakerCenterY = (height / 2) + 155;
+    // todo: write Jasper Alani over the speaker logo
+
+    const speakerCenterX = (width / 2) + 1;
+    const speakerCenterY = (height / 2) + 155;
+
+    // speaker circle overlay
+    push()
+    fill("rgba(0, 0, 0, 0.4)")
+    circle(speakerCenterX, speakerCenterY, 380)
+    pop()
+
+    // Rim
+    drawSpeakerCircle(speakerCenterX, speakerCenterY, 380, 2)
+
+    const strokeWeights = normalizeVolumes(vocal, drum, bass, other);
+
+    drawSpeakerCircle(speakerCenterX, speakerCenterY, 275 + vocal, strokeWeights.vocal)
+    drawSpeakerCircle(speakerCenterX, speakerCenterY, 175 + drum, strokeWeights.drum)
+    drawSpeakerCircle(speakerCenterX, speakerCenterY, 75 + bass, strokeWeights.bass)
+    drawSpeakerCircle(speakerCenterX, speakerCenterY, 50 + other, strokeWeights.other)
 
     push()
     noFill()
     stroke("white")
-    strokeWeight(5)
-
-    // Rim
-    circle(speakerCenterX, speakerCenterY, 420)
-
-
-
+    strokeWeight(3)
+    // first try circles
     // circle(width / 2, height / 2, 800 + vocal)
     // circle(width / 2, height / 2, 600 + drum)
     // circle(width / 2, height / 2, 400 + bass)
     // circle(width / 2, height / 2, 200 + other)
+    pop()
+}
 
+function drawSpeakerCircle(x, y, diameter, strokeWeight_, colour = "white"){
+    push()
+    noFill()
+    stroke(colour)
+    strokeWeight(strokeWeight_)
+    circle(x, y, diameter)
     pop()
 }
 
@@ -122,6 +142,17 @@ function drawExpandingCircle(x, y, object, speed) {
     pop();
 }
 
+function normalizeVolumes(vocal, drum, bass, other) {
+    const normalMax = 6
+    const normalMin = 1
+    return {
+        vocal: normalize(vocal, 0, 100, normalMin, normalMax),
+        drum: normalize(drum, 0, 100, normalMin, normalMax),
+        bass: normalize(bass, 0, 100, normalMin, normalMax),
+        other: normalize(other, 0, 100, normalMin, normalMax)
+    }
+}
+
 function getEvenCirclePoints(centerX, centerY, diameter, n) {
     const points = [];
     const angleIncrement = (2 * Math.PI) / n;
@@ -135,6 +166,10 @@ function getEvenCirclePoints(centerX, centerY, diameter, n) {
     }
 
     return points;
+}
+
+function normalize(value, min, max, normalMin, normalMax) {
+    return normalMin + ((value - min) * (normalMax - normalMin)) / (max - min);
 }
 
 /* https://stackoverflow.com/a/5624139 */

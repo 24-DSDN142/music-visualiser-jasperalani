@@ -15,6 +15,8 @@ let songEpoch = 0;              // millis when song starts
 let table;
 let words;
 
+let img; // speaker background image
+
 function songLoadedError() {
     songButton.elt.innerHTML = "Song: Load Error";
     print(songButton.elt.innerHTML);
