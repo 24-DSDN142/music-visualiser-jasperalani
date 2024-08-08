@@ -42,17 +42,35 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     textSize(24);
 
     // Set image background
-    image(img, 0, 0)
+    image(img_speaker, 0, 0)
 
     // todo: cut out speaker on photoshop
     // drawExpandingCircle(speakerCenterX, speakerCenterY, settings.vocal, vocal)
 
     // drawPerspectiveLines()
 
-    // todo: write Jasper Alani over the speaker logo
 
     const speakerCenterX = (width / 2) + 1;
     const speakerCenterY = (height / 2) + 155;
+
+    // todo: write Jasper Alani over the speaker logo
+    push()
+    // fill("rgba(0, 0, 0, 0.85)")
+    fill("black")
+    rect(speakerCenterX, speakerCenterY+250, 120, 40)
+    pop()
+
+    push()
+    translate(speakerCenterX-60, speakerCenterY+250)
+    scale(0.35)
+    image(img_speaker_logo, 0, 0)
+    pop()
+
+    // push()
+    // fill("black")
+    // textWidth(60)
+    // text("Jasper Alani", speakerCenterX-50, speakerCenterY+250)
+    // pop()
 
     // speaker circle overlay
     push()

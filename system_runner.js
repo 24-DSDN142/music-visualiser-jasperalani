@@ -15,7 +15,8 @@ let songEpoch = 0;              // millis when song starts
 let table;
 let words;
 
-let img; // speaker background image
+let img_speaker; // speaker background image
+let img_speaker_logo; // custom logo
 
 function songLoadedError() {
     songButton.elt.innerHTML = "Song: Load Error";
@@ -47,7 +48,8 @@ function songLoadedSoFar(soFar) {
 function preload() {
     table = loadTable('volumes.csv', 'csv');
     words = loadStrings('words.txt');
-    img = loadImage('/assets/speaker.webp');
+    img_speaker = loadImage('/assets/speaker.webp');
+    img_speaker_logo = loadImage('/assets/jasperalani_speaker_logo.png');
 }
 
 let volumes = [];
