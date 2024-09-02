@@ -5,9 +5,14 @@
     <script language="javascript" type="text/javascript" src="lib/p5.sound.js"></script>
     <script language="javascript" type="text/javascript" src="lib/taira.js"></script>
     <script language="javascript" type="text/javascript" src="system_settings.js"></script>
-    <script language="javascript" type="text/javascript" src="tunnel_loop.js"></script>
     <script language="javascript" type="text/javascript" src="system_runner.js"></script>
 
+    <!-- CUSTOM CODE FILE -->
+    <script language="javascript" type="text/javascript" src="water_circles.js"></script>
+<!--    <script language="javascript" type="text/javascript" src="tunnel_loop.js"></script>-->
+<!--    <script language="javascript" type="text/javascript" src="speaker.js"></script>-->
+<!--    <script language="javascript" type="text/javascript" src="guitar_twangs.js"></script>-->
+    <!-- END CUSTOM CODE -->
     <style>
         /*html, body   { padding: 0; margin: 0; overflow: hidden }*/
         .inner { position: absolute; }
@@ -30,6 +35,10 @@
     <div class="outer">
         <div class="inner">
             <div id="canvasContainer"></div>
+            <div id="gravity">Gravity</div>
+            <div id="size">Droplet size</div>
+            <div id="tension">Tension</div>
+            <div id="friction">Friction</div>
         </div>
         <div class="inner" id="controls" height="500px">
             <table>

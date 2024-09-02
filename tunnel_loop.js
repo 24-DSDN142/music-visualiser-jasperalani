@@ -1,37 +1,34 @@
 let palate = ["ffcbf2", "f3c4fb", "ecbcfd", "e5b3fe", "e2afff", "deaaff", "d8bbff", "d0d1ff", "c8e7ff", "c0fdff"];
-
-let globalDModifier = 0.5;
+let lastRandom = 0;
+let fourColours = Array.apply(null, Array(4)).map(randomColour);
+let globalDModifier = 1;
 let settings = {
     vocal: {
         diameter: 0,
         dModifier: 1.25 * globalDModifier,
         colour: "#" + palate[0],
-        opacity: Math.random(),
+        opacity: 1, // Math.random(),
     },
     drum: {
         diameter: 0,
         dModifier: 1.25 * globalDModifier,
         colour: "#" + palate[1],
-        opacity: Math.random(),
+        opacity: 1, // Math.random(),
     },
     bass: {
         diameter: 0,
         dModifier: 1.25 * globalDModifier,
         colour: "#" + palate[2],
-        opacity: Math.random(),
+        opacity: 1, // Math.random(),
     },
     other: {
         diameter: 0,
         dModifier: 1.25 * globalDModifier,
         colour: "#" + palate[3],
-        opacity: Math.random(),
+        opacity: 1, // Math.random(),
     },
 };
-let objects = []
-let gridStep = 20;
-let draw_ = true; // debug tool disable drawing objects
-let colour = "#" + palate[0];
-let lastRandom = 0;
+
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
@@ -41,82 +38,26 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     rectMode(CENTER)
     textSize(24);
 
-    // Set image background
-    image(img_speaker, 0, 0)
-
-    // todo: cut out speaker on photoshop
-    // drawExpandingCircle(speakerCenterX, speakerCenterY, settings.vocal, vocal)
-
-    // drawPerspectiveLines()
-
-
-    const speakerCenterX = (width / 2) + 1;
-    const speakerCenterY = (height / 2) + 155;
-
-    // todo: write Jasper Alani over the speaker logo
-    push()
-    // fill("rgba(0, 0, 0, 0.85)")
-    fill("black")
-    rect(speakerCenterX, speakerCenterY+250, 120, 40)
-    pop()
-
-    push()
-    translate(speakerCenterX-60, speakerCenterY+250)
-    scale(0.35)
-    image(img_speaker_logo, 0, 0)
-    pop()
-
-    // push()
-    // fill("black")
-    // textWidth(60)
-    // text("Jasper Alani", speakerCenterX-50, speakerCenterY+250)
-    // pop()
-
-    // speaker circle overlay
-    push()
-    fill("rgba(0, 0, 0, 0.4)")
-    circle(speakerCenterX, speakerCenterY, 380)
-    pop()
-
-    // Rim
-    drawSpeakerCircle(speakerCenterX, speakerCenterY, 380, 2)
-
-    const strokeWeights = normalizeVolumes(vocal, drum, bass, other);
-
-    drawSpeakerCircle(speakerCenterX, speakerCenterY, 275 + vocal, strokeWeights.vocal)
-    drawSpeakerCircle(speakerCenterX, speakerCenterY, 175 + drum, strokeWeights.drum)
-    drawSpeakerCircle(speakerCenterX, speakerCenterY, 75 + bass, strokeWeights.bass)
-    drawSpeakerCircle(speakerCenterX, speakerCenterY, 50 + other, strokeWeights.other)
-
-    push()
-    noFill()
-    stroke("white")
-    strokeWeight(3)
-    // first try circles
-    // circle(width / 2, height / 2, 800 + vocal)
-    // circle(width / 2, height / 2, 600 + drum)
-    // circle(width / 2, height / 2, 400 + bass)
-    // circle(width / 2, height / 2, 200 + other)
-    pop()
+    tunnel_loop(vocal, drum, bass, other)
 }
 
-function drawSpeakerCircle(x, y, diameter, strokeWeight_, colour = "white"){
-    push()
-    noFill()
-    stroke(colour)
-    strokeWeight(strokeWeight_)
-    circle(x, y, diameter)
-    pop()
+function tunnel_loop(vocal, drum, bass, other) {
+    drawExpandingCircle((width / 2), height / 2, settings.vocal, vocal)
+    drawExpandingCircle((width / 2), height / 2, settings.drum, drum)
+    drawExpandingCircle((width / 2), height / 2, settings.bass, bass)
+    drawExpandingCircle((width / 2), height / 2, settings.other, other)
+
+    // drawPerspectiveLines(other)
 }
 
-function drawPerspectiveLines(){
+function drawPerspectiveLines(other) {
     push()
     stroke("white")
     strokeWeight(5)
     let x1, y1;
-    let points = getEvenCirclePoints(width / 2, height / 2, 200 + other, 8)
+    let points = getEvenCirclePoints(width / 2, height / 2, 200, 8)
     for (let i = 0; i < points.length; i++) {
-        if(i % 2 === 0){
+        if (i % 2 === 0) {
             continue;
         }
         switch (i) {
@@ -142,33 +83,27 @@ function drawPerspectiveLines(){
     pop()
 }
 
-function drawExpandingCircle(x, y, object, speed) {
+function drawExpandingCircle(x, y, object, speed){
     push();
-    let rgba = hexToRgba(object.colour, object.opacity)
-    fill(rgba);
+    fill(hexToRgba(object.colour, object.opacity));
     strokeWeight(0)
-    if (object.diameter < canvasWidth + 1500) {
-        //noinspection JSUnresolvedFunction
-        draw_debug(() => circle(x, y, object.diameter))
-    } else {
-        object.diameter = 0;
-        // background(object.colour)
-        object.colour = randomColour();
-        object.opacity = Math.random();
-    }
-    draw_debug(() => object.diameter += speed * object.dModifier)
-    pop();
-}
 
-function normalizeVolumes(vocal, drum, bass, other) {
-    const normalMax = 6
-    const normalMin = 1
-    return {
-        vocal: normalize(vocal, 0, 100, normalMin, normalMax),
-        drum: normalize(drum, 0, 100, normalMin, normalMax),
-        bass: normalize(bass, 0, 100, normalMin, normalMax),
-        other: normalize(other, 0, 100, normalMin, normalMax)
+    object.diameter += (speed * object.dModifier)
+
+    // Reset if circle gets bigger than the screen
+    if(object.diameter > (canvasWidth + 500)){
+        // background(object.colour)
+        object.diameter = 0;
+        object.colour = randomColour();
+        object.opacity = 1; // Math.random();
+        pop();
+        return
     }
+
+    //noinspection JSUnresolvedFunction
+    circle(x, y, object.diameter)
+
+    pop();
 }
 
 function getEvenCirclePoints(centerX, centerY, diameter, n) {
@@ -198,8 +133,8 @@ function hexToRgba(hex, opacity = 1) {
         : null;
 }
 
-// Generate random number until it's different from the last one generated
-/* https://stackoverflow.com/a/27406684 */
+/* https://stackoverflow.com/a/27406684
+* Generate random number until it's different from the last one generated */
 function rand_(min, max) {
     let num = Math.floor(Math.random() * (max - min + 1)) + min;
     if (num === lastRandom) {
@@ -211,29 +146,4 @@ function rand_(min, max) {
 
 function randomColour() {
     return "#" + palate[rand_(0, 9)]
-}
-
-function draw_debug(callback, force) {
-    if (draw_ || force) {
-        callback()
-    }
-}
-
-/* https://editor.p5js.org/kchung/sketches/rkp-wOIF7 */
-function debugTools() {
-    background(200);
-    stroke(220);
-    strokeWeight(1);
-    for (let x = 0; x <= width; x += gridStep) {
-        for (let y = 0; y <= height; y += gridStep) {
-            line(x, 0, x, height);
-            line(0, y, width, y);
-        }
-    }
-    textFont('menlo');
-    textSize(14);
-    noStroke();
-    text("x:" + mouseX, 10, 20);
-    text("y:" + mouseY, 10, 40);
-    stroke('black'); // reset stroke
 }

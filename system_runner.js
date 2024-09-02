@@ -109,6 +109,33 @@ function setup() {
             volumes[i] = Taira.smoothen(volumes[i], Taira.ALGORITHMS.GAUSSIAN, 10, radius, true)
         }
     }
+
+    setupParticleSystem()
+}
+
+let particles = [];
+let gravitySlider;
+let sizeSlider;
+let tensionSlider;
+let frictionSlider;
+
+function setupParticleSystem() {
+    background(0)
+
+    gravitySlider = createSlider(0, 1, 0.25, 0.05);
+    select("#gravity").child(gravitySlider);
+    sizeSlider = createSlider(1, 50, 20, 1);
+    select("#size").child(sizeSlider);
+    tensionSlider = createSlider(0, 2, 0.5, 0.05);
+    select("#tension").child(tensionSlider);
+    frictionSlider = createSlider(0, 1, 0.9, 0.05);
+    select("#friction").child(frictionSlider);
+
+    for (let i = 1; i < 251; i++) {
+        particles.push(new Particle(i));
+    }
+
+    noStroke();
 }
 
 function switchRunMode() {
