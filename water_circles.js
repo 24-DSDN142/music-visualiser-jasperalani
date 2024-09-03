@@ -1,5 +1,3 @@
-let palate = ["ffcbf2", "f3c4fb", "ecbcfd", "e5b3fe", "e2afff", "deaaff", "d8bbff", "d0d1ff", "c8e7ff", "c0fdff"];
-
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
     // debugTools();
@@ -7,12 +5,43 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     // noinspection JSUnresolvedFunction
     rectMode(CENTER)
     textSize(24);
-    background(0)
+    background("#fff")
 
-    water_circles(vocal, drum, bass, other)
+    water_circles(words, vocal, drum, bass, other)
 }
 
-let pSize = 20;
+let particles = [];
+let attractionForceSlider;
+let sizeSlider;
+let tensionSlider;
+let frictionSlider;
+
+/* runs after system_runner.js:setup() */
+function setup_() {
+    // noinspection JSUnresolvedFunction
+    attractionForceSlider = createSlider(0, 1, 0.05, 0.001);
+    select("#attraction-force").child(attractionForceSlider);
+    // noinspection JSUnresolvedFunction
+    sizeSlider = createSlider(1, 50, 20, 1);
+    select("#size").child(sizeSlider);
+    // noinspection JSUnresolvedFunction
+    tensionSlider = createSlider(0, 2, 0.5, 0.05);
+    select("#tension").child(tensionSlider);
+    // noinspection JSUnresolvedFunction
+    frictionSlider = createSlider(0, 1, 0, 0.05);
+    select("#friction").child(frictionSlider);
+
+    for (let i = 0; i < 250; i++) {
+        particles.push(new Particle());
+    }
+
+    // noinspection JSUnresolvedFunction
+    noStroke();
+}
+
+const colours = ["#ffcbf2", "#d0d1ff", "#c0fdff", "#d0d1ff"];
+
+let pSize, pSize_ = 50; // weird workaround
 let repulsionForce = 0.5;
 let friction = 0.9;
 let attractionForce = 0.1;
@@ -20,34 +49,76 @@ let attractionDistance = 2;
 let repulsionDistance = 1;
 let maxVel = 5;
 let maxForce = 1;
+let particleScaleBy = 0;
+let volumeRandomiser = rand(1, 4);
 
 // Derived quantities
-let attraction2 = Math.pow(pSize * attractionDistance, 2);
-let repulsion2 = Math.pow(pSize * repulsionDistance, 2);
+let attraction2
+let repulsion2
 let vel2 = Math.pow(maxVel, 2);
 let force2 = Math.pow(maxForce, 2);
 
-let gravity;
-
 let circle_;
+let circles;
+let boundaryCircle = rand(1, 3)
+const largestCircle = 500;
+const circleStepSize = 100;
 
-function water_circles(vocal, drum, bass, other) {
-    circle_ = {
-        x: width / 2,
-        y: height / 2,
-        radius: 150,
-    };
+function water_circles(words, vocal, drum, bass, other) {
 
-    drawCircle(
-        circle_.x,
-        circle_.y,
-        circle_.radius * 2,
-        "white",
-        10,
-        "white"
+    console.log(
+        // "Four colours: " + fourColours +
+        "\nGravity: " + attractionForceSlider.value() +
+        "\nSize: " + pSize +
+        "\nRepulsion: " + tensionSlider.value() +
+        "\nFriction: " + frictionSlider.value()
     )
 
-    pSize = sizeSlider.value();
+    particleScaleBy = volumeRandomiser === 1 ? vocal :
+        volumeRandomiser === 2 ? drum :
+            volumeRandomiser === 3 ? bass :
+                volumeRandomiser === 4 ? other : 0; // i dont like big if statements
+
+    pSize = pSize_ + normalize(particleScaleBy, 0, 100, 0, 50)
+    // efficient comparison of force distance scaled by particle size
+    attraction2 = Math.pow(pSize * attractionDistance, 2);
+    repulsion2 = Math.pow(pSize * repulsionDistance, 2);
+
+    let modifier = 1.5
+
+    // increase the offset by the modifier smaller if negative or bigger if positive
+    // just scales the volume inputs appropriately, so it works better with the circle size
+    vocal *= modifier * Math.sign(vocal);
+    drum *= modifier * Math.sign(drum);
+    bass *= modifier * Math.sign(bass);
+    other *= modifier * Math.sign(other);
+
+    // create circles array of length 4
+    circles = Array.apply(null, Array(4)).map(
+        (x, i) => {
+            return {
+                x: width / 2,
+                y: height / 2,
+                radius: largestCircle
+                    - (i * circleStepSize)
+                    + (i === 0 ? (vocal) : i === 1 ? drum : i === 2 ? bass : i === 3 ? other : 0) // cool ternary 😎
+            }
+        })
+
+    // Use x circle for particle collision
+    circle_ = circles[boundaryCircle]
+
+    circles.forEach((circle, i) => {
+        drawCircle(
+            circle.x,
+            circle.y,
+            circle.radius * 2, // todo: vocal / 2 ?
+            colours[i],
+            0
+        )
+    })
+
+    // pSize = sizeSlider.value();
     repulsionForce = tensionSlider.value();
     friction = frictionSlider.value();
 
@@ -55,13 +126,12 @@ function water_circles(vocal, drum, bass, other) {
         // Calculate the vector pointing from the particle to the center of the screen
         let attraction = createVector(circle_.x - particle.pos.x, circle_.y - particle.pos.y);
 
-        // Normalize the vector and then scale it by the desired gravity magnitude
-        attraction.setMag(gravitySlider.value());
+        // Set magnitude by attraction force
+        attraction.setMag(attractionForceSlider.value());
 
-        // Apply the gravitational attraction force to the particle
+        // Apply the attraction force to the particle
         particle.applyForce(attraction);
 
-        particle.applyForce(gravity);
         particles.forEach(everyOtherParticle => {
             particle.applyForce(particle.interaction(everyOtherParticle));
         });
@@ -69,6 +139,15 @@ function water_circles(vocal, drum, bass, other) {
         particle.show();
         particle.update();
     });
+
+    push()
+    fill(colours[1])
+    noStroke()
+    textSize(64)
+    textFont(graf_font)
+    text(words, 100, 100)
+    pop()
+
 }
 
 /* https://editor.p5js.org/kwichmann/sketches/S1mqeS-oX
@@ -76,21 +155,20 @@ function water_circles(vocal, drum, bass, other) {
 * and also changes gravity force to an attraction force towards the center of the screen */
 class Particle {
 
-    id;
-
-    constructor(id) {
-        this.id = id
-
+    constructor() {
+        // spawn with random position and velocity
         this.pos = createVector(random(0, width), random(0, height))
         this.vel = createVector(random(-1, 1), random(-1, 1))
         this.force = createVector(0, 0)
 
-        this.col = random(100, 200) // what is col?
+        this.col = colours[rand(0, 3)]
     }
 
     show() {
-        fill(this.col, this.col, 255)
+        push()
+        fill(this.col)
         ellipse(this.pos.x, this.pos.y, pSize)
+        pop()
     }
 
     update() {
@@ -146,7 +224,7 @@ class Particle {
             this.vel.y *= friction;
 
             // Move the particle out of the circle to avoid sticking
-            let collisionOffset = 7;
+            let collisionOffset = 0;
             this.pos.x = circle_.x + normalX * (circle_.radius + collisionOffset + pSize / 2);
             this.pos.y = circle_.y + normalY * (circle_.radius + collisionOffset + pSize / 2);
         }
@@ -193,16 +271,12 @@ function drawCircle(x, y, diameter, colour = "none", strokeWeight_ = 10, strokeC
     pop()
 }
 
-/* https://stackoverflow.com/a/27406684 */
-function random(min, max) {
+
+/* Random integer */
+function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function randomColour() {
-    return "#" + palate[random(0, 9)]
+function normalize(value, min, max, normalMin, normalMax) {
+    return normalMin + ((value - min) * (normalMax - normalMin)) / (max - min);
 }
-
-// todo: unused?
-// function normalize(value, min, max, normalMin, normalMax) {
-//     return normalMin + ((value - min) * (normalMax - normalMin)) / (max - min);
-// }

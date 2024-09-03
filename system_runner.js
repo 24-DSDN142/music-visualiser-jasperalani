@@ -1,5 +1,7 @@
-const canvasWidth = 1200; // 1680;
-const canvasHeight = 1200; // 1050;
+// const canvasWidth = windowWidth; // 1680;
+// const canvasHeight = windowHeight; // 1050;
+let canvasWidth;
+let canvasHeight;
 
 let mainCanvas;
 
@@ -15,8 +17,10 @@ let songEpoch = 0;              // millis when song starts
 let table;
 let words;
 
-let img_speaker; // speaker background image
-let img_speaker_logo; // custom logo
+// let img_speaker; // speaker background image
+// let img_speaker_logo; // custom logo
+let rel_font;
+let graf_font;
 
 function songLoadedError() {
     songButton.elt.innerHTML = "Song: Load Error";
@@ -48,23 +52,28 @@ function songLoadedSoFar(soFar) {
 function preload() {
     table = loadTable('volumes.csv', 'csv');
     words = loadStrings('words.txt');
-    img_speaker = loadImage('/assets/speaker.webp');
-    img_speaker_logo = loadImage('/assets/jasperalani_speaker_logo.png');
+    // img_speaker = loadImage('/assets/speaker.webp');
+    // img_speaker_logo = loadImage('/assets/jasperalani_speaker_logo.png');
+    rel_font = loadFont('/assets/rel.ttf')
+    graf_font = loadFont('/assets/graf.otf')
 }
 
 let volumes = [];
 let volume_length = 0;
 
 function setup() {
+    canvasWidth = windowWidth;
+    canvasHeight = windowHeight;
+
     main_canvas = createCanvas(canvasWidth, canvasHeight);
     main_canvas.parent('canvasContainer');
-    song = loadSound('song.mp3', songLoaded, songLoadedError, songLoadedSoFar);
+    song = loadSound('eeveemadeinm_lone.mp3', songLoaded, songLoadedError, songLoadedSoFar);
 
     frameRate(60);
     angleMode(DEGREES);
 
     // create text inputs
-    textInput = createInput('words...');
+    textInput = createInput('FORMAT');
     textInput.parent('wordsContainer');
 
     // create sliders
@@ -110,33 +119,11 @@ function setup() {
         }
     }
 
-    setupParticleSystem()
+    /* water circles */
+    setup_();
 }
 
-let particles = [];
-let gravitySlider;
-let sizeSlider;
-let tensionSlider;
-let frictionSlider;
 
-function setupParticleSystem() {
-    background(0)
-
-    gravitySlider = createSlider(0, 1, 0.25, 0.05);
-    select("#gravity").child(gravitySlider);
-    sizeSlider = createSlider(1, 50, 20, 1);
-    select("#size").child(sizeSlider);
-    tensionSlider = createSlider(0, 2, 0.5, 0.05);
-    select("#tension").child(tensionSlider);
-    frictionSlider = createSlider(0, 1, 0.9, 0.05);
-    select("#friction").child(frictionSlider);
-
-    for (let i = 1; i < 251; i++) {
-        particles.push(new Particle(i));
-    }
-
-    noStroke();
-}
 
 function switchRunMode() {
     if (editorMode) {

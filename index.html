@@ -9,13 +9,21 @@
 
     <!-- CUSTOM CODE FILE -->
     <script language="javascript" type="text/javascript" src="water_circles.js"></script>
-<!--    <script language="javascript" type="text/javascript" src="tunnel_loop.js"></script>-->
-<!--    <script language="javascript" type="text/javascript" src="speaker.js"></script>-->
-<!--    <script language="javascript" type="text/javascript" src="guitar_twangs.js"></script>-->
+    <!--    <script language="javascript" type="text/javascript" src="tunnel_loop.js"></script>-->
+    <!--    <script language="javascript" type="text/javascript" src="speaker.js"></script>-->
+    <!--    <script language="javascript" type="text/javascript" src="guitar_twangs.js"></script>-->
     <!-- END CUSTOM CODE -->
     <style>
-        /*html, body   { padding: 0; margin: 0; overflow: hidden }*/
-        .inner { position: absolute; }
+        html, body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden
+        }
+
+        .inner {
+            position: absolute;
+        }
+
         #controls {
             font: 300 12px "Helvetica Neue";
             padding: 5;
@@ -27,47 +35,61 @@
             -o-transition: opacity 0.2s ease;
             -ms-transition: opacity 0.2s ease;
         }
-        #controls:hover { opacity: 0.9; }
+
+        #controls:hover {
+            opacity: 0.9;
+        }
     </style>
 
 </head>
 <body style="background-color:white">
-    <div class="outer">
-        <div class="inner">
-            <div id="canvasContainer"></div>
-            <div id="gravity">Gravity</div>
-            <div id="size">Droplet size</div>
-            <div id="tension">Tension</div>
-            <div id="friction">Friction</div>
-        </div>
-        <div class="inner" id="controls" height="500px">
-            <table>
-                <tr>
-                    <td>Words</td>
-                    <td id="wordsContainer"></td>
-                </tr>
-                <tr>
-                    <td>Vocals</td>
-                    <td id="slider1Container"></td>
-                </tr>
-                <tr>
-                    <td>Drum</td>
-                    <td id="slider2Container"></td>
-                </tr>
-                <tr>
-                    <td>Bass</td>
-                    <td id="slider3Container"></td>
-                </tr>
-                <tr>
-                    <td>Other</td>
-                    <td id="slider4Container"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td id="button1Container"></td>
-                </tr>
-            </table>
-        </div>
+<div class="outer">
+    <div class="inner">
+        <div id="canvasContainer"></div>
     </div>
-</table>
+    <div class="inner" id="controls" height="500px">
+        <table>
+            <tr>
+                <td>Words</td>
+                <td id="wordsContainer"></td>
+            </tr>
+            <tr>
+                <td>Vocals</td>
+                <td id="slider1Container"></td>
+            </tr>
+            <tr>
+                <td>Drum</td>
+                <td id="slider2Container"></td>
+            </tr>
+            <tr>
+                <td>Bass</td>
+                <td id="slider3Container"></td>
+            </tr>
+            <tr>
+                <td>Other</td>
+                <td id="slider4Container"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="button1Container"></td>
+            </tr>
+            <tr>
+                <td>Attraction</td>
+                <td id="attraction-force"></td>
+            </tr>
+            <tr>
+                <td>Particle size</td>
+                <td id="size"></td>
+            </tr>
+            <tr>
+                <td>Tension</td>
+                <td id="tension"></td>
+            </tr>
+            <tr>
+                <td>Friction</td>
+                <td id="friction"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 </body>

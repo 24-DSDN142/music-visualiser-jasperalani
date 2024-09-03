@@ -1,6 +1,5 @@
 let palate = ["ffcbf2", "f3c4fb", "ecbcfd", "e5b3fe", "e2afff", "deaaff", "d8bbff", "d0d1ff", "c8e7ff", "c0fdff"];
 let lastRandom = 0;
-let fourColours = Array.apply(null, Array(4)).map(randomColour);
 let globalDModifier = 1;
 let settings = {
     vocal: {
