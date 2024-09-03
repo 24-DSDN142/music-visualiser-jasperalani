@@ -35,7 +35,7 @@ function water_circles(vocal, drum, bass, other) {
     circle_ = {
         x: width / 2,
         y: height / 2,
-        radius: 150
+        radius: 150,
     };
 
     drawCircle(
@@ -78,9 +78,6 @@ class Particle {
 
     id;
 
-    // todo: Change gravity to point to center of screen
-    // todo: Add a bounding circle that the particles bounce off
-
     constructor(id) {
         this.id = id
 
@@ -97,21 +94,22 @@ class Particle {
     }
 
     update() {
-        // if the force becomes too strong set it to a max
+        // prevent the force from becoming too large
         if (this.force.magSq() >= force2) {
             this.force.setMag(maxForce);
         }
 
         this.vel.add(this.force)
-        this.force = createVector(0, 0)
+        this.force = createVector(0, 0) // reset and recalculate each frame
 
+        // prevent the velocity from becoming too large
         if (this.vel.magSq() >= vel2) {
             this.vel.setMag(maxVel)
         }
 
         this.pos.add(this.vel)
 
-        // Makes the particle bounce off the walls of the canvas
+        // Collision between walls and particle
         if (this.pos.x < 0 || this.pos.x > width) {
             this.vel.x *= -1 * friction;
         }
@@ -119,6 +117,7 @@ class Particle {
             this.vel.y *= -1 * friction;
         }
 
+        // Collision between circle and particle
         // vector center of circle to particle
         // each vector contains distance of x and distance of y coords
         let dx = this.pos.x - circle_.x
@@ -127,7 +126,8 @@ class Particle {
         let distance = Math.sqrt(dx * dx + dy * dy);
         // console.log(distance)
 
-        if (distance < circle_.radius) {
+        // If particle is inside circle factoring in particle size
+        if (distance < circle_.radius + pSize / 2) {
             // Normalize the vector
             let normalX = dx / distance;
             let normalY = dy / distance;
@@ -146,10 +146,10 @@ class Particle {
             this.vel.y *= friction;
 
             // Move the particle out of the circle to avoid sticking
-            this.pos.x = circle_.x + normalX * circle_.radius;
-            this.pos.y = circle_.y + normalY * circle_.radius;
+            let collisionOffset = 7;
+            this.pos.x = circle_.x + normalX * (circle_.radius + collisionOffset + pSize / 2);
+            this.pos.y = circle_.y + normalY * (circle_.radius + collisionOffset + pSize / 2);
         }
-
 
         // noinspection JSUnresolvedFunction
         this.pos.x = constrain(this.pos.x, 0, width);
@@ -161,16 +161,21 @@ class Particle {
         this.force.add(f);
     }
 
-    interaction(drop) {
-        let displacement = p5.Vector.sub(drop.pos, this.pos)
+    interaction(particle) {
+        // vector pointing from the current particle to the other particle
+        let displacement = p5.Vector.sub(particle.pos, this.pos)
+        // squared distance between the two particles
         const d2 = displacement.magSq();
+        // the particles overlap or are too far apart to exert any significant force on each other
         if (d2 === 0 || d2 >= attraction2) {
             return createVector(0, 0);
         }
         displacement.normalize();
+        // the particles are far enough apart to exert an attractive force on each other
         if (d2 >= repulsion2) {
             return p5.Vector.mult(displacement, attractionForce);
         }
+        // the particles are close enough to repel each other
         return p5.Vector.mult(displacement, --repulsionForce)
     }
 }
