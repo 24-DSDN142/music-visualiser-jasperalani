@@ -44,16 +44,18 @@ function songLoadedSoFar(soFar) {
     print(songButton.elt.innerHTML);
 }
 
+let prepath_ = "/music-visualiser-jasperalani"
+
 let bliss = {
-    table: "/music/bliss_perceptionz/volumes.csv",
-    words: "/music/bliss_perceptionz/words.txt",
-    song: "/music/bliss_perceptionz/song.mp3"
+    table: prepath_ + "/music/bliss_perceptionz/volumes.csv",
+    words: prepath_ + "/music/bliss_perceptionz/words.txt",
+    song: prepath_ + "/music/bliss_perceptionz/song.mp3"
 }
 
 let lone = {
-    table: "/music/eeveemadeinm_lone/volumes.csv",
-    words: "/music/eeveemadeinm_lone/words.txt",
-    song: "/music/eeveemadeinm_lone/song.mp3"
+    table: prepath_ + "/music/eeveemadeinm_lone/volumes.csv",
+    words: prepath_ + "/music/eeveemadeinm_lone/words.txt",
+    song: prepath_ + "/music/eeveemadeinm_lone/song.mp3"
 }
 
 let song_files = bliss
@@ -69,14 +71,14 @@ function preload() {
     words = loadStrings(song_files.words);
     // img_speaker = loadImage('/assets/speaker.webp');
     // img_speaker_logo = loadImage('/assets/jasperalani_speaker_logo.png');
-    rel_font = loadFont('/assets/rel.ttf')
-    graf_font = loadFont('/assets/graf.otf')
-    forest1 = loadImage('/assets/forest1.jpg');
-    forest2 = loadImage('/assets/forest2.jpg');
-    cliff1 = loadImage('/assets/cliff1.jpg');
-    space1 = loadImage('/assets/space1.jpg');
-    fantasy1 = loadImage('/assets/fantasy1.jpg');
-    fantasy2 = loadImage('/assets/fantasy2.jpg');
+    rel_font = loadFont(prepath_ + '/assets/rel.ttf')
+    graf_font = loadFont(prepath_ + '/assets/graf.otf')
+    forest1 = loadImage(prepath_ + '/assets/forest1.jpg');
+    forest2 = loadImage(prepath_ + '/assets/forest2.jpg');
+    cliff1 = loadImage(prepath_ + '/assets/cliff1.jpg');
+    space1 = loadImage(prepath_ + '/assets/space1.jpg');
+    fantasy1 = loadImage(prepath_ + '/assets/fantasy1.jpg');
+    fantasy2 = loadImage(prepath_ + '/assets/fantasy2.jpg');
 }
 
 let volumes = [];
