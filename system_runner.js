@@ -17,11 +17,6 @@ let songEpoch = 0;              // millis when song starts
 let table;
 let words;
 
-// let img_speaker; // speaker background image
-// let img_speaker_logo; // custom logo
-let rel_font;
-let graf_font;
-
 function songLoadedError() {
     songButton.elt.innerHTML = "Song: Load Error";
     print(songButton.elt.innerHTML);
@@ -49,13 +44,39 @@ function songLoadedSoFar(soFar) {
     print(songButton.elt.innerHTML);
 }
 
+let bliss = {
+    table: "/music/bliss_perceptionz/volumes.csv",
+    words: "/music/bliss_perceptionz/words.txt",
+    song: "/music/bliss_perceptionz/song.mp3"
+}
+
+let lone = {
+    table: "/music/eeveemadeinm_lone/volumes.csv",
+    words: "/music/eeveemadeinm_lone/words.txt",
+    song: "/music/eeveemadeinm_lone/song.mp3"
+}
+
+let song_files = bliss
+
+// let img_speaker; // speaker background image
+// let img_speaker_logo; // custom logo
+let forest1, forest2, cliff1, space1, fantasy1, fantasy2;
+let rel_font;
+let graf_font;
+
 function preload() {
-    table = loadTable('volumes.csv', 'csv');
-    words = loadStrings('words.txt');
+    table = loadTable(song_files.table, 'csv');
+    words = loadStrings(song_files.words);
     // img_speaker = loadImage('/assets/speaker.webp');
     // img_speaker_logo = loadImage('/assets/jasperalani_speaker_logo.png');
     rel_font = loadFont('/assets/rel.ttf')
     graf_font = loadFont('/assets/graf.otf')
+    forest1 = loadImage('/assets/forest1.jpg');
+    forest2 = loadImage('/assets/forest2.jpg');
+    cliff1 = loadImage('/assets/cliff1.jpg');
+    space1 = loadImage('/assets/space1.jpg');
+    fantasy1 = loadImage('/assets/fantasy1.jpg');
+    fantasy2 = loadImage('/assets/fantasy2.jpg');
 }
 
 let volumes = [];
@@ -67,7 +88,7 @@ function setup() {
 
     main_canvas = createCanvas(canvasWidth, canvasHeight);
     main_canvas.parent('canvasContainer');
-    song = loadSound('eeveemadeinm_lone.mp3', songLoaded, songLoadedError, songLoadedSoFar);
+    song = loadSound(song_files.song, songLoaded, songLoadedError, songLoadedSoFar);
 
     frameRate(60);
     angleMode(DEGREES);
@@ -192,6 +213,7 @@ function draw() {
                 }
                 // text("Song starting in: " + secondsRemaining, width/2, height/2)
             } else if (!songIsPlaying) {
+                console.log("song playing")
                 song.play();
                 songIsPlaying = true;
                 songEpoch = millis();

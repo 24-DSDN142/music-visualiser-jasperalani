@@ -12,23 +12,26 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
 let particles = [];
 let attractionForceSlider;
-let sizeSlider;
 let tensionSlider;
 let frictionSlider;
 
+let defaultValues = {
+    attractionForce: 0.01,
+    tension: 0.5,
+    friction: 0
+}
+
 /* runs after system_runner.js:setup() */
 function setup_() {
+
     // noinspection JSUnresolvedFunction
-    attractionForceSlider = createSlider(0, 1, 0.05, 0.001);
+    attractionForceSlider = createSlider(0, 1, defaultValues.attractionForce, 0.001);
     select("#attraction-force").child(attractionForceSlider);
     // noinspection JSUnresolvedFunction
-    sizeSlider = createSlider(1, 50, 20, 1);
-    select("#size").child(sizeSlider);
-    // noinspection JSUnresolvedFunction
-    tensionSlider = createSlider(0, 2, 0.5, 0.05);
+    tensionSlider = createSlider(0, 2, defaultValues.tension, 0.05);
     select("#tension").child(tensionSlider);
     // noinspection JSUnresolvedFunction
-    frictionSlider = createSlider(0, 1, 0, 0.05);
+    frictionSlider = createSlider(0, 1, defaultValues.friction, 0.05);
     select("#friction").child(frictionSlider);
 
     for (let i = 0; i < 250; i++) {
@@ -49,8 +52,6 @@ let attractionDistance = 2;
 let repulsionDistance = 1;
 let maxVel = 5;
 let maxForce = 1;
-let particleScaleBy = 0;
-let volumeRandomiser = rand(1, 4);
 
 // Derived quantities
 let attraction2
@@ -60,38 +61,56 @@ let force2 = Math.pow(maxForce, 2);
 
 let circle_;
 let circles;
-let boundaryCircle = rand(1, 3)
+let boundaryCircle = 1;
 const largestCircle = 500;
 const circleStepSize = 100;
 
+let mouseRepulsionForce = 150;
+
+let bg_ = 0;
+
 function water_circles(words, vocal, drum, bass, other) {
 
-    console.log(
-        // "Four colours: " + fourColours +
-        "\nGravity: " + attractionForceSlider.value() +
-        "\nSize: " + pSize +
-        "\nRepulsion: " + tensionSlider.value() +
-        "\nFriction: " + frictionSlider.value()
-    )
+    let backgrounds = [forest1, forest2, cliff1, space1, fantasy1, fantasy2]
+    if (bg_ === 0){
+        bg_ = backgrounds[rand(0, 5)]
+    }
+    image(bg_, 0, 0, width, height, 0, 0, bg_, bg_.height, COVER);
 
-    particleScaleBy = volumeRandomiser === 1 ? vocal :
-        volumeRandomiser === 2 ? drum :
-            volumeRandomiser === 3 ? bass :
-                volumeRandomiser === 4 ? other : 0; // i dont like big if statements
 
-    pSize = pSize_ + normalize(particleScaleBy, 0, 100, 0, 50)
-    // efficient comparison of force distance scaled by particle size
+    let p = vocal
+    vocal = drum
+    drum = p
+
+    // console.log(
+    //     // "Four colours: " + fourColours +
+    //     "\nGravity: " + attractionForceSlider.value() +
+    //     "\nSize: " + pSize +
+    //     "\nRepulsion: " + tensionSlider.value() +
+    //     "\nFriction: " + frictionSlider.value()
+    // )
+
+    pSize = pSize_ + normalize(drum, 0, 130, 0, 50) //todo:drum?
+    // comparison of distance scaled by particle size
     attraction2 = Math.pow(pSize * attractionDistance, 2);
     repulsion2 = Math.pow(pSize * repulsionDistance, 2);
 
-    let modifier = 1.5
+    let modifier = 5
 
     // increase the offset by the modifier smaller if negative or bigger if positive
     // just scales the volume inputs appropriately, so it works better with the circle size
-    vocal *= modifier * Math.sign(vocal);
-    drum *= modifier * Math.sign(drum);
-    bass *= modifier * Math.sign(bass);
-    other *= modifier * Math.sign(other);
+    if(vocal > 0){
+        vocal *= 2.75
+    }else{
+        vocal *= 2
+    }
+    if(drum > 0){
+        drum *= 4
+    }else{
+        drum *= 4
+    }
+    bass *= 1.5 * Math.sign(bass);
+    other *= 1 * Math.sign(other);
 
     // create circles array of length 4
     circles = Array.apply(null, Array(4)).map(
@@ -131,6 +150,16 @@ function water_circles(words, vocal, drum, bass, other) {
 
         // Apply the attraction force to the particle
         particle.applyForce(attraction);
+
+        // Apply mouse repulsion
+        let mouseRepulsion = createVector(particle.pos.x - mouseX, particle.pos.y - mouseY);
+        let distanceToMouse = mouseRepulsion.mag();
+
+        // If the particle is within a certain distance from the mouse, apply repulsion force
+        if (distanceToMouse < pSize * 10) {
+            mouseRepulsion.setMag(mouseRepulsionForce / distanceToMouse);
+            particle.applyForce(mouseRepulsion);
+        }
 
         particles.forEach(everyOtherParticle => {
             particle.applyForce(particle.interaction(everyOtherParticle));
