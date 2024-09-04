@@ -75,7 +75,7 @@ function water_circles(words, vocal, drum, bass, other) {
     if (bg_ === 0){
         bg_ = backgrounds[rand(0, 5)]
     }
-    image(bg_, 0, 0, width, height, 0, 0, bg_, bg_.height, COVER);
+    image(bg_, 0, 0, width, height, 0, 0, bg_.width, bg_.height, COVER);
 
 
     let p = vocal
