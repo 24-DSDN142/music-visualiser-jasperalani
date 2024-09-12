@@ -5,16 +5,30 @@
     <script language="javascript" type="text/javascript" src="lib/p5.sound.js"></script>
     <script language="javascript" type="text/javascript" src="lib/taira.js"></script>
     <script language="javascript" type="text/javascript" src="system_settings.js"></script>
-    <script language="javascript" type="text/javascript" src="music_starter.js"></script>
     <script language="javascript" type="text/javascript" src="system_runner.js"></script>
 
+    <!-- CUSTOM CODE FILE -->
+    <script language="javascript" type="text/javascript" src="water_circles.js"></script>
+    <!-- The two JS files below are two different types of music visualiser
+    that I was testing, but I went with the one above -->
+    <!--    <script language="javascript" type="text/javascript" src="tunnel_loop.js"></script>-->
+    <!--    <script language="javascript" type="text/javascript" src="speaker.js"></script>-->
+    <!-- END CUSTOM CODE -->
     <style>
-        body   { padding: 0; margin: 0; }
-        .inner { position: absolute; }
+        html, body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden
+        }
+
+        .inner {
+            position: absolute;
+        }
+
         #controls {
             font: 300 12px "Helvetica Neue";
-            padding: 5;
-            margin: 5;
+            padding: 5px;
+            margin: 5pxs;
             background: #f0f0f0;
             opacity: 0.0;
             -webkit-transition: opacity 0.2s ease;
@@ -22,43 +36,57 @@
             -o-transition: opacity 0.2s ease;
             -ms-transition: opacity 0.2s ease;
         }
-        #controls:hover { opacity: 0.9; }
+
+        #controls:hover {
+            opacity: 0.9;
+        }
     </style>
 
 </head>
 <body style="background-color:white">
-    <div class="outer">
-        <div class="inner">
-            <div id="canvasContainer"></div>
-        </div>
-        <div class="inner" id="controls" height="500px">
-            <table>
-                <tr>
-                    <td>Words</td>
-                    <td id="wordsContainer"></td>
-                </tr>
-                <tr>
-                    <td>Vocals</td>
-                    <td id="slider1Container"></td>
-                </tr>
-                <tr>
-                    <td>Drum</td>
-                    <td id="slider2Container"></td>
-                </tr>
-                <tr>
-                    <td>Bass</td>
-                    <td id="slider3Container"></td>
-                </tr>
-                <tr>
-                    <td>Other</td>
-                    <td id="slider4Container"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td id="button1Container"></td>
-                </tr>
-            </table>
-        </div>
+<div class="outer">
+    <div class="inner">
+        <div id="canvasContainer"></div>
     </div>
-</table>
+    <div class="inner" id="controls" height="500px">
+        <table>
+            <tr>
+                <td>Words</td>
+                <td id="wordsContainer"></td>
+            </tr>
+            <tr>
+                <td>Vocals</td>
+                <td id="slider1Container"></td>
+            </tr>
+            <tr>
+                <td>Drum</td>
+                <td id="slider2Container"></td>
+            </tr>
+            <tr>
+                <td>Bass</td>
+                <td id="slider3Container"></td>
+            </tr>
+            <tr>
+                <td>Other</td>
+                <td id="slider4Container"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="button1Container"></td>
+            </tr>
+            <tr>
+                <td>Attraction</td>
+                <td id="attraction-force"></td>
+            </tr>
+            <tr>
+                <td>Tension</td>
+                <td id="tension"></td>
+            </tr>
+            <tr>
+                <td>Friction</td>
+                <td id="friction"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 </body>

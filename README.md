@@ -1,7 +1,12 @@
-# Vizer
+## Music Visualizer
+### DSDN142 Project Two
 
-A P5JS framework for running a simple music visualizer, intended as a creative coding I assignment.
+Hosted at: https://24-dsdn142.github.io/music-visualiser-jasperalani/
 
-Song details: // UPDATE THIS AS YOUR CHANGE YOUR SONG 
-Title = Just Dropped In (To See What Condition My Condition Was In)
-Artist = Kenny Rogers
+Song details:<br>
+Title = Perceptionz<br>
+Artist = Bliss<br>
+
+<br>
+
+##### Jasper Alani
