@@ -90,12 +90,10 @@ function water_circles(words, vocal, drum, bass, other) {
     //     "\nFriction: " + frictionSlider.value()
     // )
 
-    pSize = pSize_ + normalize(drum, 0, 130, 0, 50) //todo:drum?
+    pSize = pSize_ + normalize(drum, 0, 130, 0, 50)
     // comparison of distance scaled by particle size
     attraction2 = Math.pow(pSize * attractionDistance, 2);
     repulsion2 = Math.pow(pSize * repulsionDistance, 2);
-
-    let modifier = 5
 
     // increase the offset by the modifier smaller if negative or bigger if positive
     // just scales the volume inputs appropriately, so it works better with the circle size
@@ -110,7 +108,7 @@ function water_circles(words, vocal, drum, bass, other) {
         drum *= 4
     }
     bass *= 1.5 * Math.sign(bass);
-    other *= 1 * Math.sign(other);
+    other *= Math.sign(other);
 
     // create circles array of length 4
     circles = Array.apply(null, Array(4)).map(
@@ -131,7 +129,7 @@ function water_circles(words, vocal, drum, bass, other) {
         drawCircle(
             circle.x,
             circle.y,
-            circle.radius * 2, // todo: vocal / 2 ?
+            circle.radius * 2,
             colours[i],
             0
         )
@@ -306,6 +304,7 @@ function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/* Normalise variable between a normalMin and normalMax */
 function normalize(value, min, max, normalMin, normalMax) {
     return normalMin + ((value - min) * (normalMax - normalMin)) / (max - min);
 }

@@ -1,13 +1,12 @@
 ## Music Visualizer
 ### DSDN142 Project Two
-- Made using Vizer
-  - A P5JS framework for running a simple music visualizer
 
-Hosted at: https://riseandflour.co.uk/jasperalani/music-visualiser/
+Hosted at: https://24-dsdn142.github.io/music-visualiser-jasperalani/
 
 Song details:<br>
 Title = Perceptionz<br>
 Artist = Bliss<br>
 
+<br>
 
 ##### Jasper Alani
